@@ -1,3 +1,6 @@
+# author:Demon
+# time:2017/12/24
+# function:
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -28,54 +31,78 @@ def gethtml(html):
 if __name__ == '__main__':
 
     init()
-
     text = gethtml('https://tieba.baidu.com/f?kw=%B0%D9%B6%C8%CD%BC%C6%AC&fr=ala0&tpl=5')
 
-    img_original_html = r'original="(.+?\.jpg)" '
-    img_html = r'src="(https+.+?\.jpg)" '
-
-    img_original_re = re.compile(img_original_html)
-    img_re = re.compile(img_html)
-
-    img_original_re_list = re.findall(img_original_re, text)
-    img_re_list = re.findall(img_re, text)
-
-    print('img_html_original总的图片链接数:{}'.format(img_original_re_list.__len__()))
-    for i in img_original_re_list:
-        print(i)
-
-    print('img_html总的图片链接数:{}'.format(img_re_list.__len__()))
-    for i in img_re_list:
-        print(i)
-    print('总的jpg图片数目:{}'.format(img_re_list.__len__()+img_original_re_list.__len__()))
-
-    print('***********************正在下载图片************************')
+    """
+    1.构建更合理的regex,使得结构更简单
+    """
+    img_html_all = r'"(https.+?\.(jpg|jpeg))"'
+    img_all_re = re.compile(img_html_all)
+    img_all_re_list = re.findall(img_all_re, text)
+    for img in img_all_re_list:
+        print(img[0])
+    print('总的图片数量:{}'.format(img_all_re_list.__len__()))
     count = 1
-
-    for img in img_original_re_list:
-        req = requests.get(img, timeout=1)
+    for img in img_all_re_list:
+        req = requests.get(img[0])
         if req.status_code == 200:
-            print('正在下载第{}张图片....'.format(count))
-            filepath = 'C:\\Users\\Administrator\\Desktop\\capture\\' + str(count) + '.jpg'
+            req.encoding = 'UTF-8'
+            print('正在下载第{}张图片,URL: {}'.format(count, img[0]))
+            filepath = 'C:\\Users\\Administrator\\Desktop\\capture\\'+str(count)+'.jpg'
             f = open(filepath, 'wb')
             f.write(req.content)
             f.close()
-            print('第{}张图片下载完成。'.format(count))
-            count = count+1
-            if count % 20 == 0:
-                time.sleep(1)
+            print('第{}张图片下载完成'.format(count))
+            count += 1
+    print('下载完成，总共下载了 {} 张图片'.format(count-1))
 
-    for img in img_re_list:
-        req = requests.get(img, timeout=1)
-        if req.status_code == 200:
-            print('正在下载第{}张图片....'.format(count))
-            filepath = 'C:\\Users\\Administrator\\Desktop\\capture\\' + str(count) + '.jpg'
-            f = open(filepath, 'wb')
-            f.write(req.content)
-            f.close()
-            print('第{}张图片下载完成。'.format(count))
-            count = count + 1
-            if count % 20 == 0:
-                time.sleep(1)
+    """
+    2.分开下载（获取图片比较麻烦）
+    """
 
-    print('******下载完成，总共下载了:{}张图片******'.format(count-1))
+    # img_original_html = r'original="(.+?\.jpg)" '
+    # img_html = r'src="(https.+?\.jpg)" '
+    # img_original_re = re.compile(img_original_html)
+    # img_re = re.compile(img_html)
+    #
+    # img_original_re_list = re.findall(img_original_re, text)
+    # img_re_list = re.findall(img_re, text)
+    #
+    # print('img_html_original总的图片链接数:{}'.format(img_original_re_list.__len__()))
+    # for i in img_original_re_list:
+    #     print(i)
+    #
+    # print('img_html总的图片链接数:{}'.format(img_re_list.__len__()))
+    # for i in img_re_list:
+    #     print(i)
+    # print('总的jpg图片数目:{}'.format(img_re_list.__len__()+img_original_re_list.__len__()))
+    #
+    # print('***********************正在下载图片************************')
+    # count = 1
+    #
+    # for img in img_original_re_list:
+    #     req = requests.get(img, timeout=1)
+    #     if req.status_code == 200:
+    #         print('正在下载第{}张图片....'.format(count))
+    #         filepath = 'C:\\Users\\Administrator\\Desktop\\capture\\' + str(count) + '.jpg'
+    #         f = open(filepath, 'wb')
+    #         f.write(req.content)
+    #         f.close()
+    #         print('第{}张图片下载完成。'.format(count))
+    #         count = count+1
+    #         if count % 20 == 0:
+    #             time.sleep(1)
+    #
+    # for img in img_re_list:
+    #     req = requests.get(img, timeout=1)
+    #     if req.status_code == 200:
+    #         print('正在下载第{}张图片....'.format(count))
+    #         filepath = 'C:\\Users\\Administrator\\Desktop\\capture\\' + str(count) + '.jpg'
+    #         f = open(filepath, 'wb')
+    #         f.write(req.content)
+    #         f.close()
+    #         print('第{}张图片下载完成。'.format(count))
+    #         count = count + 1
+    #         if count % 20 == 0:
+    #             time.sleep(1)
+    # print('******下载完成，总共下载了:{}张图片******'.format(count-1))
