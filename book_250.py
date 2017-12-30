@@ -102,8 +102,8 @@ def parsehtml():
     for item in book_info:
         sql = "insert into book_250(name,grade,person) values('{}','{}','{}');".format(item[0], item[1], item[2])
         cur.execute(sql)
+    cur.execute('set sql_safe_updates=1') 
     conn.commit()
-    cur.execute('set sql_safe_updates=1')
     conn.close()
     print('写入数据库完成')
 
