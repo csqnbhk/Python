@@ -99,6 +99,7 @@ def parsehtml():
     print('开始写入数据库')
     cur.execute('set sql_safe_updates=0;')
     conn.commit()   # 只有提交才可以，对下面生效
+    cur.excute('start transaction;') # 事务处理
     for item in book_info:
         sql = "insert into book_250(name,grade,person) values('{}','{}','{}');".format(item[0], item[1], item[2])
         cur.execute(sql)
