@@ -97,12 +97,13 @@ def gethtml(html):
 # 测试
 if __name__ == '__main__':
     init()
-    # text = gethtml('https://book.douban.com/subject/1148282/')
+    text = gethtml('https://book.douban.com/subject/1148282/')
     text = 'https://book.douban.com/tag/%E7%BC%96%E7%A8%8B?start=0&type=T'
     regex = r'<div class="pub">(.+?)'
     regex = re.compile(regex, re.S)
     name = re.findall(regex, text)
     print(name)
+
     # regex = r'<span property="v:itemreviewed">(.+?)</span>'
     # regex = re.compile(regex)
     # name = re.findall(regex, text)
